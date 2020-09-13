@@ -1,0 +1,6 @@
+{
+  "src/**/*.{ts,tsx}": [
+    "eslint",
+    "prettier --config ./.prettierrc -c"
+  ]
+}
