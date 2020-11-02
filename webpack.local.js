@@ -19,7 +19,7 @@ module.exports = merge(
     devServer: {
       host: '0.0.0.0',
       hot: true,
-      port: 8000,
+      port: 18008,
       inline: true,
       contentBase: path.resolve(__dirname, 'src'),
       historyApiFallback: true,
