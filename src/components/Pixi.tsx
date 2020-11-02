@@ -1,6 +1,5 @@
-import React, { useEffect, useState, WheelEventHandler } from 'react';
-// import { Application, Graphics } from 'pixi.js';
-import { PixiComponent, Stage, Sprite, render, Container } from '@inlet/react-pixi';
+import React, { useEffect, useState } from 'react';
+import { Stage, Sprite, Container } from '@inlet/react-pixi';
 import { InteractionEvent } from 'pixi.js';
 import useWindowSize from '../hooks/useWindowSize';
 
@@ -13,9 +12,23 @@ interface Props {
 }
 
 const Pixi = (props: Props) => {
-  const scale = { x: 0.15, y: 0.15 };
+  const [scale, setScale] = useState(0.5);
   const windowSize = useWindowSize();
-  console.log({ pins: props.pins });
+  const wheelHandler = (e: WheelEvent) => {
+    setScale(currentState => Math.min(Math.max(0.05, currentState + e.deltaY * -0.001), 1));
+    // disable browser default pinching in/out
+    e.preventDefault();
+  };
+
+  useEffect(() => {
+    const el = document.getElementsByTagName('canvas')[0];
+    el.onwheel = e => {
+      wheelHandler(e);
+    };
+    return () => {
+      el.onwheel = null;
+    };
+  }, []);
 
   return (
     <Stage width={(windowSize.width - 300) / 2} height={windowSize.height} id="canvas">
