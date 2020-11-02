@@ -12,7 +12,8 @@ interface Props {
 }
 
 const Pixi = (props: Props) => {
-  const [scale, setScale] = useState(0.5);
+  const [scale, setScale] = useState(0.2);
+  // TODO pinching in/out した場所に応じて anchor 変える
   const windowSize = useWindowSize();
   const wheelHandler = (e: WheelEvent) => {
     setScale(currentState => Math.min(Math.max(0.05, currentState + e.deltaY * -0.001), 1));
