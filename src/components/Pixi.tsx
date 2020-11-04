@@ -13,12 +13,16 @@ interface Props {
 
 const Pixi = (props: Props) => {
   const [scale, setScale] = useState(0.2);
+  const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   // TODO pinching in/out した場所に応じて anchor 変える
   const windowSize = useWindowSize();
   const wheelHandler = (e: WheelEvent) => {
-    setScale(currentState => Math.min(Math.max(0.05, currentState + e.deltaY * -0.001), 1));
-    // disable browser default pinching in/out
     e.preventDefault();
+    if (!Number.isInteger(e.deltaY)) {
+      setScale(currentState => Math.min(Math.max(0.05, currentState + e.deltaY * -0.001), 1));
+      return;
+    }
+    setPosition(currentState => ({ x: currentState.x - e.deltaX, y: currentState.y - e.deltaY }));
   };
 
   useEffect(() => {
@@ -37,8 +41,8 @@ const Pixi = (props: Props) => {
         <Sprite
           image="./images/sample.jpg"
           anchor={0}
-          x={0}
-          y={0}
+          x={position.x}
+          y={position.y}
           scale={scale}
           interactive={true}
           pointerdown={(e: InteractionEvent) => {
