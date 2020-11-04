@@ -12,14 +12,14 @@ interface Props {
 }
 
 const Pixi = (props: Props) => {
-  const [scale, setScale] = useState(0.2);
+  const [scale, setScale] = useState(0);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  // TODO pinching in/out した場所に応じて anchor 変える
   const windowSize = useWindowSize();
   const wheelHandler = (e: WheelEvent) => {
     e.preventDefault();
     if (!Number.isInteger(e.deltaY)) {
       setScale(currentState => Math.min(Math.max(0.05, currentState + e.deltaY * -0.001), 1));
+      // TODO pinching in/out した場所に応じて anchor 変える
       return;
     }
     setPosition(currentState => ({ x: currentState.x - e.deltaX, y: currentState.y - e.deltaY }));
@@ -35,22 +35,48 @@ const Pixi = (props: Props) => {
     };
   }, []);
 
+  const [originalImageSize, setOriginalImageSize] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = './images/sample.jpg';
+
+    img.onload = function () {
+      const _this = (this as unknown) as { width: number; height: number };
+      setOriginalImageSize({ x: _this.width, y: _this.height });
+    };
+  }, []);
+
+  useEffect(() => {
+    if (originalImageSize.x === 0) {
+      return;
+    }
+    if (originalImageSize.x >= originalImageSize.y) {
+      setScale(canvasWidth / originalImageSize.x);
+      return;
+    }
+    setScale(canvasHeight / originalImageSize.y);
+  }, [originalImageSize]);
+
+  const canvasWidth = (windowSize.width - 300) / 2;
+  const canvasHeight = windowSize.height / 2;
+  const anchor = 0.5;
   return (
-    <Stage width={(windowSize.width - 300) / 2} height={windowSize.height} id="canvas">
+    <Stage width={canvasWidth} height={canvasHeight} id="canvas">
       <Container>
         <Sprite
           image="./images/sample.jpg"
-          anchor={0}
-          x={position.x}
-          y={position.y}
+          anchor={anchor}
+          x={position.x + canvasWidth * anchor}
+          y={position.y + canvasHeight * anchor}
           scale={scale}
           interactive={true}
           pointerdown={(e: InteractionEvent) => {
-            const position = {
+            const pinPosition = {
               xRatio: e.data.global.x,
               yRatio: e.data.global.y - 10,
             };
-            props.addPin(position);
+            props.addPin(pinPosition);
           }}
         />
         {props.pins.map(p => (
