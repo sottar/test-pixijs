@@ -13,7 +13,7 @@ const App = () => {
   const [chatList, setChatList] = useState<
     {
       messages: string[];
-      pin: { xRatio: number; yRatio: number };
+      pin: { xRatio: number; yRatio: number }; // 0 ~ 1
     }[]
   >([]);
 

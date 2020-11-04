@@ -15,11 +15,15 @@ const Pixi = (props: Props) => {
   const [scale, setScale] = useState(0);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const windowSize = useWindowSize();
+
+  const canvasWidth = (windowSize.width - 300) / window.devicePixelRatio || 1;
+  const canvasHeight = windowSize.height / window.devicePixelRatio || 1;
+  const anchor = 0.5;
+
   const wheelHandler = (e: WheelEvent) => {
     e.preventDefault();
     if (!Number.isInteger(e.deltaY)) {
       setScale(currentState => Math.min(Math.max(0.05, currentState + e.deltaY * -0.001), 1));
-      // TODO pinching in/out した場所に応じて anchor 変える
       return;
     }
     setPosition(currentState => ({ x: currentState.x - e.deltaX, y: currentState.y - e.deltaY }));
@@ -58,9 +62,6 @@ const Pixi = (props: Props) => {
     setScale(canvasHeight / originalImageSize.y);
   }, [originalImageSize]);
 
-  const canvasWidth = (windowSize.width - 300) / 2;
-  const canvasHeight = windowSize.height / 2;
-  const anchor = 0.5;
   return (
     <Stage width={canvasWidth} height={canvasHeight} id="canvas">
       <Container>
@@ -72,21 +73,35 @@ const Pixi = (props: Props) => {
           scale={scale}
           interactive={true}
           pointerdown={(e: InteractionEvent) => {
-            const pinPosition = {
-              xRatio: e.data.global.x,
-              yRatio: e.data.global.y - 10,
-            };
-            props.addPin(pinPosition);
+            const imageSize = { x: originalImageSize.x * scale, y: originalImageSize.y * scale };
+            const xRatio =
+              (e.data.global.x - ((canvasWidth - imageSize.x) / 2 + position.x)) / imageSize.x;
+            const yRatio =
+              (e.data.global.y - ((canvasHeight - imageSize.y) / 2 + position.y)) / imageSize.y;
+            props.addPin({
+              xRatio,
+              yRatio,
+            });
           }}
         />
         {props.pins.map(p => (
           <Sprite
             key={`${p.xRatio} ${p.yRatio}`}
             image="./images/pin.png"
-            anchor={0.5}
-            x={p.xRatio}
-            y={p.yRatio}
+            anchor={anchor}
+            x={
+              originalImageSize.x * scale * p.xRatio +
+              (canvasWidth - originalImageSize.x * scale) / 2 +
+              position.x
+            }
+            y={
+              originalImageSize.y * scale * p.yRatio +
+              (canvasHeight - originalImageSize.y * scale) / 2 +
+              position.y -
+              10
+            }
             scale={0.05}
+            click={() => console.log('click')}
             interactive={true}
           />
         ))}
