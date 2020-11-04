@@ -100,7 +100,7 @@ const Pixi = (props: Props) => {
               position.y -
               10
             }
-            scale={0.05}
+            scale={0.02}
             click={() => console.log('click')}
             interactive={true}
           />
