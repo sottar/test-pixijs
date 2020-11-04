@@ -5,10 +5,10 @@ import useWindowSize from '../hooks/useWindowSize';
 
 interface Props {
   pins: {
-    x: number;
-    y: number;
+    xRatio: number;
+    yRatio: number;
   }[];
-  addPin: (position: { x: number; y: number }) => void;
+  addPin: (position: { xRatio: number; yRatio: number }) => void;
 }
 
 const Pixi = (props: Props) => {
@@ -43,19 +43,19 @@ const Pixi = (props: Props) => {
           interactive={true}
           pointerdown={(e: InteractionEvent) => {
             const position = {
-              x: e.data.global.x,
-              y: e.data.global.y - 10,
+              xRatio: e.data.global.x,
+              yRatio: e.data.global.y - 10,
             };
             props.addPin(position);
           }}
         />
         {props.pins.map(p => (
           <Sprite
-            key={`${p.x} ${p.y}`}
+            key={`${p.xRatio} ${p.yRatio}`}
             image="./images/pin.png"
             anchor={0.5}
-            x={p.x}
-            y={p.y}
+            x={p.xRatio}
+            y={p.yRatio}
             scale={0.05}
             interactive={true}
           />
