@@ -73,15 +73,29 @@ interface Props {
   activeChatIndex: number;
   updateMessageHandler: (value: string, index: number) => void;
   submitMessageHandler: (index: number) => void;
+  chatListRef: React.MutableRefObject<null>;
+  activeItemRef: React.MutableRefObject<null>;
+  textAreaRef: React.MutableRefObject<null>;
 }
 
-const Chat = ({ chatList, activeChatIndex, updateMessageHandler, submitMessageHandler }: Props) => {
+const Chat = ({
+  chatList,
+  activeChatIndex,
+  updateMessageHandler,
+  submitMessageHandler,
+  chatListRef,
+  activeItemRef,
+  textAreaRef,
+}: Props) => {
   return (
     <Wrapper>
       <Head>Chats</Head>
-      <ChatList>
+      <ChatList ref={chatListRef}>
         {chatList.map((c, i) => (
-          <ChatItem key={`${c.pin.xRatio} ${c.pin.yRatio}`}>
+          <ChatItem
+            key={`${c.pin.xRatio} ${c.pin.yRatio}`}
+            ref={activeChatIndex === i ? activeItemRef : undefined}
+          >
             <div className="pin">
               <img className="img" src="./images/pin.svg" alt="" width="20px" />
               <span className="number">{i + 1}</span>
@@ -102,6 +116,7 @@ const Chat = ({ chatList, activeChatIndex, updateMessageHandler, submitMessageHa
                     onChange={e => updateMessageHandler(e.currentTarget.value, i)}
                     value={c.inputValue}
                     rows={4}
+                    ref={textAreaRef}
                   ></textarea>
                   <button onClick={() => submitMessageHandler(i)}>post</button>
                 </>

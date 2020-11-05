@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Chat } from './components/Chat';
 import { Pixi } from './components/Pixi';
@@ -18,6 +18,9 @@ const App = () => {
     }[]
   >([]);
   const [activeChatIndex, setActiveChatIndex] = useState(0);
+  const chatListRef = useRef(null);
+  const activeItemRef = useRef(null);
+  const textAreaRef = useRef(null);
 
   const createNewChat = (position: { xRatio: number; yRatio: number }) => {
     const filteredState = chatList.filter(c => c.messages.length > 0);
@@ -54,6 +57,7 @@ const App = () => {
     });
     tmp[index].inputValue = '';
     setChatList(tmp);
+    focusOnTextarea();
   };
 
   const pinList = useMemo(() => {
@@ -65,9 +69,24 @@ const App = () => {
     setActiveChatIndex(index);
   };
 
+  useEffect(() => {
+    if (!activeItemRef.current) {
+      return;
+    }
+    const chatListRefCurrent = chatListRef.current! as { scrollTop: number };
+    const activeRefCurrent = activeItemRef.current! as { offsetTop: number };
+    chatListRefCurrent.scrollTop = activeRefCurrent.offsetTop - 54;
+    focusOnTextarea();
+  }, [activeChatIndex]);
+
   const clearEmptyChats = () => {
     const filteredChatList = chatList.filter(c => c.messages.length > 0);
     setChatList(filteredChatList);
+  };
+
+  const focusOnTextarea = () => {
+    const textareaRefCurrent = textAreaRef.current! as { focus: () => void };
+    textareaRefCurrent.focus();
   };
 
   return (
@@ -78,6 +97,9 @@ const App = () => {
         activeChatIndex={activeChatIndex}
         updateMessageHandler={updateMessageHandler}
         submitMessageHandler={submitMessageHandler}
+        chatListRef={chatListRef}
+        activeItemRef={activeItemRef}
+        textAreaRef={textAreaRef}
       />
     </Wrapper>
   );
