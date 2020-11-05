@@ -49,6 +49,7 @@ const ChatItem = styled.li`
   }
   .message {
     margin: 0 4px 10px;
+    white-space: pre-wrap;
   }
   .input {
     padding: 5px;
