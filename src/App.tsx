@@ -20,15 +20,16 @@ const App = () => {
   const [activeChatIndex, setActiveChatIndex] = useState(0);
 
   const createNewChat = (position: { xRatio: number; yRatio: number }) => {
-    setChatList(current => [
-      ...current,
+    const filteredState = chatList.filter(c => c.messages.length > 0);
+    setChatList([
+      ...filteredState,
       {
         messages: [],
         inputValue: '',
         pin: position,
       },
     ]);
-    setActiveChatIndex(chatList.length);
+    setActiveChatIndex(filteredState.length);
   };
 
   const updateMessageHandler = (value: string, index: number) => {
@@ -44,17 +45,15 @@ const App = () => {
       return;
     }
     const date = new Date();
-    setChatList(current => {
-      const tmp = [...current];
-      tmp[index].messages.push({
-        id: String(tmp[index].messages.length + 1),
-        author: 'Sota Ohara',
-        createdAt: `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`,
-        message: tmp[index].inputValue,
-      });
-      tmp[index].inputValue = '';
-      return tmp;
+    const tmp = [...chatList];
+    tmp[index].messages.push({
+      id: String(tmp[index].messages.length + 1),
+      author: 'Sota Ohara',
+      createdAt: `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`,
+      message: tmp[index].inputValue,
     });
+    tmp[index].inputValue = '';
+    setChatList(tmp);
   };
 
   const pinList = useMemo(() => {
@@ -62,7 +61,13 @@ const App = () => {
   }, [chatList]);
 
   const clickPinHandler = (index: number) => {
+    clearEmptyChats();
     setActiveChatIndex(index);
+  };
+
+  const clearEmptyChats = () => {
+    const filteredChatList = chatList.filter(c => c.messages.length > 0);
+    setChatList(filteredChatList);
   };
 
   return (

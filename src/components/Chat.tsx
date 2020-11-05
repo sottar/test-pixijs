@@ -2,22 +2,27 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  padding: 0 10px;
   width: 300px;
   box-sizing: border-box;
+  border-left: 1px solid #333;
   flex-shrink: 0;
 `;
 const Head = styled.p`
   font-weight: bold;
+  padding: 20px 10px 10px;
 `;
 const ChatList = styled.ul`
   margin: 0;
   padding: 0;
   list-style-type: none;
+  height: calc(100vh - 54px);
+  overflow: scroll;
 `;
 const ChatItem = styled.li`
   display: flex;
   justify-content: space-between;
+  padding: 10px 10px 20px;
+  border-bottom: 1px solid #7b7b7b;
   .pin {
     position: relative;
     width: 30px;
@@ -43,7 +48,7 @@ const ChatItem = styled.li`
     color: #888;
   }
   .message {
-    margin: 4px 4px 8px;
+    margin: 0 4px 10px;
   }
   .input {
     padding: 5px;
