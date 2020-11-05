@@ -4,12 +4,13 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
   width: 300px;
   box-sizing: border-box;
-  border-left: 1px solid #333;
+  border-left: 1px solid #dfe3e9;
   flex-shrink: 0;
 `;
 const Head = styled.p`
   font-weight: bold;
   padding: 20px 10px 10px;
+  box-shadow: 0px 2px 2px rgba(64, 80, 119, 0.1);
 `;
 const ChatList = styled.ul`
   margin: 0;
@@ -17,14 +18,17 @@ const ChatList = styled.ul`
   list-style-type: none;
   height: calc(100vh - 54px);
   overflow: scroll;
+  scroll-behavior: smooth;
 `;
 const ChatItem = styled.li`
   display: flex;
   justify-content: space-between;
   padding: 10px 10px 20px;
-  border-bottom: 1px solid #7b7b7b;
+  border-bottom: 1px solid #dfe3e9;
   .pin {
-    position: relative;
+    position: sticky;
+    top: 10px;
+    height: 30px;
     width: 30px;
     flex-shrink: 0;
     .number {
@@ -50,6 +54,8 @@ const ChatItem = styled.li`
   .message {
     margin: 0 4px 10px;
     white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 20px;
   }
   .input {
     padding: 5px;
