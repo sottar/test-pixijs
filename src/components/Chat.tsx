@@ -16,6 +16,23 @@ const ChatList = styled.ul`
   list-style-type: none;
 `;
 const ChatItem = styled.li`
+  display: flex;
+  justify-content: space-between;
+  .pin {
+    position: relative;
+    width: 30px;
+    flex-shrink: 0;
+    .number {
+      position: absolute;
+      left: 6px;
+      top: 1px;
+      font-size: 12px;
+      color: #fff;
+    }
+  }
+  .content {
+    width: 100%;
+  }
   .author {
     font-size: 12px;
     font-weight: bold;
@@ -52,26 +69,32 @@ const Chat = ({ chatList, activeChatIndex, updateMessageHandler, submitMessageHa
       <Head>Chats</Head>
       <ChatList>
         {chatList.map((c, i) => (
-          <ChatItem key={c.pin.xRatio}>
-            {c.messages.map(m => (
-              <div key={c.pin.xRatio + c.pin.yRatio + m.id}>
-                <span className="author">{m.author}</span>
-                <span className="createdAt">{m.createdAt}</span>
-                <p className="message">{m.message}</p>
-              </div>
-            ))}
-            {i === activeChatIndex && (
-              <>
-                <textarea
-                  className="input"
-                  name=""
-                  onChange={e => updateMessageHandler(e.currentTarget.value, i)}
-                  value={c.inputValue}
-                  rows={4}
-                ></textarea>
-                <button onClick={() => submitMessageHandler(i)}>post</button>
-              </>
-            )}
+          <ChatItem key={`${c.pin.xRatio} ${c.pin.yRatio}`}>
+            <div className="pin">
+              <img className="img" src="./images/pin.svg" alt="" width="20px" />
+              <span className="number">{i + 1}</span>
+            </div>
+            <div className="content">
+              {c.messages.map(m => (
+                <div key={c.pin.xRatio + c.pin.yRatio + m.id}>
+                  <span className="author">{m.author}</span>
+                  <span className="createdAt">{m.createdAt}</span>
+                  <p className="message">{m.message}</p>
+                </div>
+              ))}
+              {i === activeChatIndex && (
+                <>
+                  <textarea
+                    className="input"
+                    name=""
+                    onChange={e => updateMessageHandler(e.currentTarget.value, i)}
+                    value={c.inputValue}
+                    rows={4}
+                  ></textarea>
+                  <button onClick={() => submitMessageHandler(i)}>post</button>
+                </>
+              )}
+            </div>
           </ChatItem>
         ))}
       </ChatList>
