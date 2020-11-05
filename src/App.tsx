@@ -17,6 +17,7 @@ const App = () => {
       pin: { xRatio: number; yRatio: number }; // 0 ~ 1
     }[]
   >([]);
+  const [activeChatIndex, setActiveChatIndex] = useState(0);
 
   const createNewChat = (position: { xRatio: number; yRatio: number }) => {
     setChatList(current => [
@@ -27,6 +28,7 @@ const App = () => {
         pin: position,
       },
     ]);
+    setActiveChatIndex(chatList.length);
   };
 
   const updateMessageHandler = (value: string, index: number) => {
@@ -59,11 +61,16 @@ const App = () => {
     return chatList.map(c => c.pin);
   }, [chatList]);
 
+  const clickPinHandler = (index: number) => {
+    setActiveChatIndex(index);
+  };
+
   return (
     <Wrapper>
-      <Pixi pins={pinList} addPin={createNewChat} />
+      <Pixi pins={pinList} addPin={createNewChat} clickPinHandler={clickPinHandler} />
       <Chat
         chatList={chatList}
+        activeChatIndex={activeChatIndex}
         updateMessageHandler={updateMessageHandler}
         submitMessageHandler={submitMessageHandler}
       />

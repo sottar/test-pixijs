@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Stage, Sprite, Container } from '@inlet/react-pixi';
-import { InteractionEvent } from 'pixi.js';
+import { Stage, Sprite, Container, Text } from '@inlet/react-pixi';
+import * as PIXI from 'pixi.js';
 import useWindowSize from '../hooks/useWindowSize';
 
 interface Props {
@@ -9,8 +9,14 @@ interface Props {
     yRatio: number;
   }[];
   addPin: (position: { xRatio: number; yRatio: number }) => void;
+  clickPinHandler: (index: number) => void;
 }
 
+const numberStyle = new PIXI.TextStyle({
+  fontFamily: 'Arial',
+  fill: ['#ffffff'],
+  fontWeight: 'bold',
+});
 const Pixi = (props: Props) => {
   const [scale, setScale] = useState(0);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -72,7 +78,7 @@ const Pixi = (props: Props) => {
           y={position.y + canvasHeight * anchor}
           scale={scale}
           interactive={true}
-          pointerdown={(e: InteractionEvent) => {
+          pointerdown={(e: PIXI.InteractionEvent) => {
             const imageSize = { x: originalImageSize.x * scale, y: originalImageSize.y * scale };
             const xRatio =
               (e.data.global.x - ((canvasWidth - imageSize.x) / 2 + position.x)) / imageSize.x;
@@ -84,27 +90,37 @@ const Pixi = (props: Props) => {
             });
           }}
         />
-        {props.pins.map(p => (
-          <Sprite
-            key={`${p.xRatio} ${p.yRatio}`}
-            image="./images/pin.png"
-            anchor={anchor}
-            x={
-              originalImageSize.x * scale * p.xRatio +
-              (canvasWidth - originalImageSize.x * scale) / 2 +
-              position.x
-            }
-            y={
-              originalImageSize.y * scale * p.yRatio +
-              (canvasHeight - originalImageSize.y * scale) / 2 +
-              position.y -
-              10
-            }
-            scale={0.02}
-            click={() => console.log('click')}
-            interactive={true}
-          />
-        ))}
+        {props.pins.map((p, i) => {
+          const positionX =
+            originalImageSize.x * scale * p.xRatio +
+            (canvasWidth - originalImageSize.x * scale) / 2 +
+            position.x;
+          const positionY =
+            originalImageSize.y * scale * p.yRatio +
+            (canvasHeight - originalImageSize.y * scale) / 2 +
+            position.y;
+          return (
+            <React.Fragment key={`${p.xRatio} ${p.yRatio}`}>
+              <Sprite
+                image="./images/pin.svg"
+                anchor={anchor}
+                x={positionX}
+                y={positionY - 10}
+                scale={0.23}
+                click={() => props.clickPinHandler(i)}
+                interactive={true}
+                cursor="pointer"
+              />
+              <Text
+                text={String(i + 1)}
+                x={i < 9 ? positionX - 2 : positionX - 5}
+                y={positionY - 18}
+                scale={0.3}
+                style={numberStyle}
+              />
+            </React.Fragment>
+          );
+        })}
       </Container>
     </Stage>
   );

@@ -41,11 +41,12 @@ interface Props {
     inputValue: string;
     pin: { xRatio: number; yRatio: number }; // 0 ~ 1
   }[];
+  activeChatIndex: number;
   updateMessageHandler: (value: string, index: number) => void;
   submitMessageHandler: (index: number) => void;
 }
 
-const Chat = ({ chatList, updateMessageHandler, submitMessageHandler }: Props) => {
+const Chat = ({ chatList, activeChatIndex, updateMessageHandler, submitMessageHandler }: Props) => {
   return (
     <Wrapper>
       <Head>Chats</Head>
@@ -59,14 +60,18 @@ const Chat = ({ chatList, updateMessageHandler, submitMessageHandler }: Props) =
                 <p className="message">{m.message}</p>
               </div>
             ))}
-            <textarea
-              className="input"
-              name=""
-              onChange={e => updateMessageHandler(e.currentTarget.value, i)}
-              value={c.inputValue}
-              rows={4}
-            ></textarea>
-            <button onClick={() => submitMessageHandler(i)}>post</button>
+            {i === activeChatIndex && (
+              <>
+                <textarea
+                  className="input"
+                  name=""
+                  onChange={e => updateMessageHandler(e.currentTarget.value, i)}
+                  value={c.inputValue}
+                  rows={4}
+                ></textarea>
+                <button onClick={() => submitMessageHandler(i)}>post</button>
+              </>
+            )}
           </ChatItem>
         ))}
       </ChatList>
