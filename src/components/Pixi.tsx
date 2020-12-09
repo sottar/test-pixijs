@@ -72,7 +72,7 @@ const Pixi = (props: Props) => {
     <Stage width={canvasWidth} height={canvasHeight} id="canvas">
       <Container>
         <Sprite
-          image="./images/sample.jpg"
+          texture={PIXI.Texture.from('./images/sample.jpg')}
           anchor={anchor}
           x={position.x + canvasWidth * anchor}
           y={position.y + canvasHeight * anchor}
@@ -102,7 +102,7 @@ const Pixi = (props: Props) => {
           return (
             <React.Fragment key={`${p.xRatio} ${p.yRatio}`}>
               <Sprite
-                image="./images/pin.svg"
+                texture={PIXI.Texture.from('./images/pin.svg')}
                 anchor={anchor}
                 x={positionX}
                 y={positionY - 10}
