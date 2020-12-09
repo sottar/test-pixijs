@@ -50,7 +50,7 @@
     "lint:pkg": "lerna run lint --parallel",
     "lint:prettier": "prettier --check \"**/*.{js,ts,tsx}\"",
     "lint:style": "stylelint '**/*.ts{,x}' -s css-in-js",
-  "commitmsg": "commitlint -e $GIT_PARAMS",
+    "commitmsg": "commitlint -e $GIT_PARAMS",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
